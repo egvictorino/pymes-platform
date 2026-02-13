@@ -1,0 +1,170 @@
+name: Production Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Permite deploy manual
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "production"
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Pre-Production Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Security audit
+        run: pnpm audit --audit-level=high
+      
+      - name: Lint (strict)
+        run: pnpm --filter @pymes/ui-components lint
+      
+      - name: Type check
+        run: |
+          pnpm --filter @pymes/shared-utils build
+          pnpm --filter @pymes/ui-components build
+          pnpm exec tsc --noEmit -p packages/ui-components/tsconfig.json
+
+  build-production:
+    name: Build Production
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-prod-${{ hashFiles('**/pnpm-lock.yaml') }}
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build packages (production mode)
+        run: |
+          NODE_ENV=production pnpm --filter @pymes/shared-utils build
+          NODE_ENV=production pnpm --filter @pymes/ui-components build
+          NODE_ENV=production pnpm --filter @pymes/template-base build
+      
+      - name: Upload production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: |
+            packages/*/dist
+            apps/*/dist
+          retention-days: 30
+
+  deploy-storybook-production:
+    name: Deploy Storybook to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build-production
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build Storybook
+        run: pnpm --filter @pymes/ui-components build-storybook
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./packages/ui-components/storybook-static
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  create-release:
+    name: Create Release Tag
+    runs-on: ubuntu-latest
+    needs: [deploy-storybook-production]
+    if: github.event_name == 'push'
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(date +%Y.%m.%d)-${{ github.run_number }}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          release_name: Release v${{ steps.version.outputs.version }}
+          body: |
+            ## 🚀 Cambios en Producción
+            
+            **Commit:** ${{ github.sha }}
+            **Autor:** ${{ github.actor }}
+            
+            ### Documentación
+            - [Storybook](https://tu-usuario.github.io/pymes-platform/)
+          draft: false
+          prerelease: false
+
+  notify-production:
+    name: Notify Production Deploy
+    runs-on: ubuntu-latest
+    needs: [create-release]
+    
+    steps:
+      - name: Success notification
+        run: |
+          echo "✅ Deploy a PRODUCCIÓN completado exitosamente"
+          echo "🔗 Storybook: https://tu-usuario.github.io/pymes-platform/"
+          # Integración con Slack/Discord/Email

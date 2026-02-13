@@ -19,6 +19,62 @@ pymes-platform/
 ├── apps/              # Aplicaciones
 │   └── template-base  # Template base para clientes
 └── infrastructure/    # Infraestructura y DevOps
+
+## 🌳 Estrategia de Branches
+```
+main (producción)
+  ↑
+  qa (testing)
+    ↑
+    dev (desarrollo)
+      ↑
+      feature/xxx (features)
+```
+
+### Flujo de Trabajo
+
+1. **Desarrollo de features:**
+```bash
+   git checkout dev
+   git checkout -b feature/nombre-feature
+   # ... hacer cambios ...
+   git commit -m "feat: descripción"
+   git push origin feature/nombre-feature
+   # Crear PR: feature/nombre-feature → dev
+```
+
+2. **Release a QA:**
+```bash
+   # Cuando dev está estable
+   # Crear PR: dev → qa
+   # Después del merge, automáticamente se despliega a QA
+```
+
+3. **Release a Producción:**
+```bash
+   # Cuando QA está aprobado
+   # Crear PR: qa → main
+   # Después del merge, automáticamente se despliega a producción
+```
+
+### Ambientes
+
+| Branch | Ambiente | URL Storybook | Deploy |
+|--------|----------|---------------|--------|
+| `main` | Producción | https://tu-usuario.github.io/pymes-platform/ | Automático en merge |
+| `qa` | Testing | (configurar) | Automático en merge |
+| `dev` | Desarrollo | (configurar) | Automático en merge |
+
+### Hotfixes
+
+Para bugs críticos en producción:
+```bash
+git checkout main
+git checkout -b hotfix/nombre-fix
+# ... arreglar bug ...
+git commit -m "hotfix: descripción"
+# Crear PR: hotfix/nombre-fix → main
+# Después hacer cherry-pick o merge de vuelta a qa y dev
 ```
 
 ## 🚀 Inicio Rápido

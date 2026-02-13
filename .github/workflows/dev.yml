@@ -1,0 +1,102 @@
+name: Development
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Lint ui-components
+        run: pnpm --filter @pymes/ui-components lint
+        continue-on-error: true
+
+  build:
+    name: Build Packages
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build all packages
+        run: |
+          pnpm --filter @pymes/shared-utils build
+          pnpm --filter @pymes/ui-components build
+          pnpm --filter @pymes/template-base build
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-build
+          path: |
+            packages/*/dist
+            apps/*/dist
+          retention-days: 3
+
+  deploy-storybook-dev:
+    name: Deploy Storybook (Dev Preview)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build Storybook
+        run: pnpm --filter @pymes/ui-components build-storybook
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+      
+      - name: Deploy to Netlify (or surge.sh)
+        run: echo "📦 Aquí desplegarías a un ambiente de dev preview"
+        # Ejemplo con Surge.sh (gratis):
+        # - run: npm install -g surge
+        # - run: surge ./packages/ui-components/storybook-static pymes-dev.surge.sh --token ${{ secrets.SURGE_TOKEN }}

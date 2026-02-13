@@ -1,0 +1,85 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-pr:
+    name: Validate PR
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check PR target branch
+        run: |
+          TARGET="${{ github.base_ref }}"
+          SOURCE="${{ github.head_ref }}"
+          
+          echo "📋 PR: $SOURCE → $TARGET"
+          
+          # Validar flujo de branches
+          if [[ "$TARGET" == "main" ]] && [[ "$SOURCE" != "qa" ]]; then
+            echo "❌ ERROR: Solo se puede mergear a 'main' desde 'qa'"
+            echo "Tu PR es: $SOURCE → $TARGET"
+            echo "Debe ser: qa → main"
+            exit 1
+          fi
+          
+          if [[ "$TARGET" == "qa" ]] && [[ "$SOURCE" != "dev" ]] && [[ "$SOURCE" != "hotfix/"* ]]; then
+            echo "❌ ERROR: Solo se puede mergear a 'qa' desde 'dev' o 'hotfix/*'"
+            echo "Tu PR es: $SOURCE → $TARGET"
+            echo "Debe ser: dev → qa"
+            exit 1
+          fi
+          
+          echo "✅ Flujo de branches correcto"
+      
+      - name: Check PR title format
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if [[ ! "$PR_TITLE" =~ ^(feat|fix|docs|style|refactor|test|chore|hotfix)(\(.+\))?:\ .+ ]]; then
+            echo "⚠️ Recomendación: Usa conventional commits"
+            echo "Ejemplo: feat(button): agregar variante outline"
+          fi
+
+  build-and-test:
+    name: Build & Test PR
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Lint
+        run: pnpm --filter @pymes/ui-components lint
+        continue-on-error: true
+      
+      - name: Build
+        run: |
+          pnpm --filter @pymes/shared-utils build
+          pnpm --filter @pymes/ui-components build
+      
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ Build exitoso! Los cambios están listos para review.'
+            })
