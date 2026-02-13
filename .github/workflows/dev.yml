@@ -20,10 +20,10 @@ jobs:
       
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
       
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       
       - name: Lint ui-components
         run: pnpm --filter @pymes/ui-components lint
@@ -42,7 +42,7 @@ jobs:
       
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
       
       - name: Setup pnpm cache
         uses: actions/cache@v4
@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-pnpm-
       
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       
       - name: Build all packages
         run: |
@@ -85,10 +85,10 @@ jobs:
       
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
       
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       
       - name: Build Storybook
         run: pnpm --filter @pymes/ui-components build-storybook
