@@ -1,0 +1,25 @@
+{
+  "name": "pymes-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plataforma de desarrollo web para PYMEs",
+  "scripts": {
+    "dev": "pnpm --parallel --recursive dev",
+    "build": "pnpm --recursive build",
+    "test": "pnpm --recursive test",
+    "lint": "pnpm --recursive lint",
+    "clean": "pnpm --recursive clean && rm -rf node_modules",
+    "components:dev": "pnpm --filter @pymes/ui-components dev",
+    "components:build": "pnpm --filter @pymes/ui-components build"
+  },
+  "devDependencies": {
+    "@types/node": "20.10.0",
+    "typescript": "5.3.3",
+    "prettier": "3.1.1",
+    "eslint": "8.56.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

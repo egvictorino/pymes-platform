@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": true
+  },
+  "files": [],
+  "references": [
+    { "path": "./packages/ui-components" },
+    { "path": "./packages/shared-utils" },
+    { "path": "./apps/template-base" }
+  ]
+}
