@@ -19,6 +19,7 @@ pymes-platform/
 ├── apps/              # Aplicaciones
 │   └── template-base  # Template base para clientes
 └── infrastructure/    # Infraestructura y DevOps
+```
 
 ## 🌳 Estrategia de Branches
 ```
