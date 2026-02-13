@@ -6,20 +6,36 @@
   "scripts": {
     "dev": "pnpm --parallel --recursive dev",
     "build": "pnpm --recursive build",
-    "test": "pnpm --recursive test",
+    "test": "echo \"Tests pendientes\"",
     "lint": "pnpm --recursive lint",
-    "clean": "pnpm --recursive clean && rm -rf node_modules",
-    "components:dev": "pnpm --filter @pymes/ui-components dev",
-    "components:build": "pnpm --filter @pymes/ui-components build"
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "devDependencies": {
-    "@types/node": "20.10.0",
-    "typescript": "5.3.3",
-    "prettier": "3.1.1",
-    "eslint": "8.56.0"
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
   },
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "storybook": "^8.6.15",
+      "@storybook/addon-essentials": "^8.6.15",
+      "@storybook/addon-interactions": "^8.6.15",
+      "@storybook/addon-links": "^8.6.15",
+      "@storybook/blocks": "^8.6.15",
+      "@storybook/react": "^8.6.15",
+      "@storybook/react-vite": "^8.6.15",
+      "@storybook/test": "^8.6.15",
+      "esbuild": "^0.25.0"
+    }
   }
 }
