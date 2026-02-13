@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'bare' | 'soul';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
@@ -14,18 +14,20 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   ...props
 }) => {
-  const baseStyles = 'rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseStyles = 'rounded-[1px] font-small transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer';
   
   const variants = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
-    outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500',
+    primary: 'bg-primary-default text-white hover:bg-primary-hover active:bg-primary-pressed dark:bg-primary-700 dark:hover:bg-primary-600 dark:active:bg-primary-800',
+    secondary: 'bg-secondary-600 text-white hover:bg-secondary-700 active:bg-secondary-800 focus:ring-secondary-500',
+    tertiary: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 active:bg-primary-100 focus:ring-primary-500',
+    bare: 'bg-transparent text-gray-700 border border-gray-300 hover:bg-gray-100 active:bg-gray-200 focus:ring-gray-500',
+    soul: 'bg-soul-600 text-white hover:bg-soul-700 active:bg-soul-800 focus:ring-soul-500'
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-[12px] py-[6px] text-sm',
+    md: 'px-[20px] py-[10px] text-[12px]',
+    lg: 'px-[24px] py-[12px] text-lg',
   };
 
   return (

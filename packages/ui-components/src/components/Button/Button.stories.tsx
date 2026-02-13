@@ -37,10 +37,24 @@ export const Secondary: Story = {
   },
 };
 
-export const Outline: Story = {
+export const Tertiary: Story = {
   args: {
-    variant: 'outline',
-    children: 'Button Outline',
+    variant: 'tertiary',
+    children: 'Button Tertiary',
+  },
+};
+
+export const Bare: Story = {
+  args: {
+    variant: 'bare',
+    children: 'Button Bare',
+  },
+};
+
+export const Soul: Story = {
+  args: {
+    variant: 'soul',
+    children: 'Button Soul',
   },
 };
 
