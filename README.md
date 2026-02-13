@@ -47,4 +47,10 @@ cp -r apps/template-base apps/cliente-nombre
 # Actualizar package.json del nuevo cliente
 # Instalar dependencias
 pnpm install
+
+# Agregar una dependencia a un paquete específico
+pnpm add <paquete> --filter @pymes/ui-components
+
+# Ver todos los workspaces
+pnpm list --depth 0
 ```
