@@ -1,0 +1,67 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-info:
+    name: PR Information
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+
+      - name: List changed files
+        run: |
+          echo "Changed files:"
+          echo "${{ steps.changed-files.outputs.all_changed_files }}"
+
+      - name: Check PR title
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if [[ ! "$PR_TITLE" =~ ^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?:\ .+ ]]; then
+            echo "❌ PR title debe seguir el formato: tipo(scope): descripción"
+            echo "Ejemplos: feat: agregar componente Input"
+            echo "         fix(button): corregir estilos hover"
+            exit 1
+          fi
+          echo "✅ PR title es válido"
+
+  size-check:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: |
+          pnpm --filter @pymes/shared-utils build
+          pnpm --filter @pymes/ui-components build
+
+      - name: Check bundle size
+        run: |
+          echo "📦 Tamaño de los builds:"
+          du -sh packages/*/dist
