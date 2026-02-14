@@ -11,7 +11,7 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'outline'],
+      options: ['primary', 'secondary', 'bare', 'soul'],
     },
     size: {
       control: 'select',
@@ -37,13 +37,6 @@ export const Secondary: Story = {
   },
 };
 
-export const Tertiary: Story = {
-  args: {
-    variant: 'tertiary',
-    children: 'Button Tertiary',
-  },
-};
-
 export const Bare: Story = {
   args: {
     variant: 'bare',
@@ -55,19 +48,5 @@ export const Soul: Story = {
   args: {
     variant: 'soul',
     children: 'Button Soul',
-  },
-};
-
-export const Small: Story = {
-  args: {
-    size: 'sm',
-    children: 'Small Button',
-  },
-};
-
-export const Large: Story = {
-  args: {
-    size: 'lg',
-    children: 'Large Button',
   },
 };

@@ -1,3 +1,5 @@
+import { text } from 'stream/consumers';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -8,20 +10,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-        default: '#1543AB',
-        hover: '#1E366B',
-        pressed: '#6d28d9',
+        interaction: {
+          primary: {
+            default: '#1643A8',
+            hover: '#10327D',
+            pressed: '#0B2152',
+          },
+           secondary: {
+          default: '#DEE4ED',
+          hover: '#B6BBC3',
+          pressed: '#8E9298',
         },
-        secondary: {
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
         },
-        soul: {
-          600: '#ec4899',
-          700: '#be185d',
-          800: '#9d174d',
+        text: {
+          primary: '#111111',
+          secondary: '#4b5563',
+          disabled: '#9ca3af',
+          white: '#ffffff',
         },
       },
     },
