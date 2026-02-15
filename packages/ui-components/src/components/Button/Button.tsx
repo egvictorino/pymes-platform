@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'bare' | 'soul';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
@@ -14,18 +14,19 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   ...props
 }) => {
-  const baseStyles = 'rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseStyles = 'rounded-[1px] font-small transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer';
   
   const variants = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
-    outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500',
+    primary: 'bg-interaction-primary-default text-white hover:bg-interaction-primary-hover active:bg-interaction-primary-pressed dark:bg-interaction-primary-700 dark:hover:bg-interaction-primary-600 dark:active:bg-interaction-primary-800',
+    secondary: 'bg-interaction-secondary-default text-primary hover:bg-interaction-secondary-hover active:bg-interaction-secondary-pressed dark:bg-interaction-secondary-700 dark:hover:bg-interaction-secondary-600 dark:active:bg-interaction-secondary-800',
+    bare: 'bg-transparent text-interaction-primary-default border border-interaction-primary-default hover:text-interaction-primary-hover hover:border-interaction-primary-hover active:text-interaction-primary-pressed active:border-interaction-primary-pressed focus:ring-gray-500',
+    soul: 'bg-transparent text-interaction-primary-default focus:ring-soul-500'
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-[12px] py-[6px] text-sm',
+    md: 'px-[20px] py-[10px] text-[12px]',
+    lg: 'px-[24px] py-[12px] text-lg',
   };
 
   return (
