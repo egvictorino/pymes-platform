@@ -107,19 +107,6 @@ pnpm --filter @pymes/template-base dev
 - `pnpm test` - Ejecuta todos los tests
 - `pnpm lint` - Ejecuta el linter en todos los proyectos
 
-## 🔄 Flujo de Trabajo
-
-1. Crea una rama desde `develop`: `git checkout -b feat/nueva-funcionalidad`
-2. Realiza tus cambios
-3. Commit siguiendo conventional commits: `git commit -m "feat: agregar componente Input"`
-4. Push y crea un Pull Request
-5. GitHub Actions ejecutará automáticamente:
-   - ✅ Linting
-   - ✅ Type checking
-   - ✅ Build
-   - ✅ Tests
-6. Al hacer merge a `main`, se despliega Storybook automáticamente
-
 ## 🏗️ Agregar Nuevo Cliente
 ```bash
 # Copiar template
