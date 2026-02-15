@@ -1,6 +1,7 @@
 {
   "name": "pymes-platform",
   "version": "1.0.0",
+  "packageManager": "pnpm@10.29.3",
   "private": true,
   "description": "Plataforma de desarrollo web para PYMEs",
   "scripts": {
