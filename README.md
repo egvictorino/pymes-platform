@@ -1,8 +1,5 @@
 # PYMEs Platform - Monorepo
 
-[![CI](https://github.com/TU-USUARIO/pymes-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/TU-USUARIO/pymes-platform/actions/workflows/ci.yml)
-[![Storybook](https://github.com/TU-USUARIO/pymes-platform/actions/workflows/deploy-storybook.yml/badge.svg)](https://github.com/TU-USUARIO/pymes-platform/actions/workflows/deploy-storybook.yml)
-
 Plataforma de desarrollo web para PYMEs en Nuevo León, México.
 
 ## 📚 Documentación
